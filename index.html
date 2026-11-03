@@ -107,6 +107,21 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .sl{display:grid;grid-template-columns:92px 1fr 34px;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);height:30px}
 .sl output{font-size:11.5px;text-align:right;color:var(--tx3);font-variant-numeric:tabular-nums}
 .sl.dis{opacity:.4;pointer-events:none}
+.hdAuto{width:100%;height:40px;margin:2px 0 8px;background:linear-gradient(90deg,rgba(37,99,235,.1),rgba(124,58,237,.1));border-color:transparent;color:var(--hi)}
+.hdAuto:hover{background:linear-gradient(90deg,rgba(37,99,235,.17),rgba(124,58,237,.17))}
+.tg{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:40px;font-size:12.5px;color:var(--tx2);cursor:pointer}
+.tg small{display:block;font-size:11px;color:var(--tx3);margin-top:1px}
+.tg input{position:absolute;opacity:0;pointer-events:none}
+.tg i{flex:none;width:36px;height:21px;border-radius:11px;background:var(--line2);position:relative;transition:background .15s}
+.tg i::after{content:"";position:absolute;left:2px;top:2px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.tg input:checked+i{background:var(--hi)}
+.tg input:checked+i::after{transform:translateX(15px)}
+.tg input:focus-visible+i{outline:2px solid var(--hi);outline-offset:2px}
+.cmp{position:absolute;right:10px;bottom:8px;display:flex;align-items:center;gap:5px;height:28px;padding:0 11px;border-radius:20px;background:var(--panel);box-shadow:var(--sh);font-size:12px;font-weight:600;color:var(--tx2);user-select:none;-webkit-user-select:none;touch-action:none}
+.cmp svg.i{width:15px;height:15px}
+.cmp.on{background:var(--hi);color:#fff}
+.hdTag{position:absolute;left:10px;bottom:8px;height:22px;padding:0 8px;border-radius:6px;background:var(--hi);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.05em;display:none;align-items:center}
+.hdTag.on{display:flex}
 input[type=range]{width:100%;accent-color:var(--hi)}
 .strip{order:3;flex:none;display:flex;gap:8px;overflow-x:auto;padding:9px 12px;background:var(--panel);border-top:1px solid var(--line);scrollbar-width:none}
 .strip::-webkit-scrollbar{display:none}
@@ -249,6 +264,8 @@ input[type=range]{width:100%;accent-color:var(--hi)}
 <symbol id="i-crop" viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></symbol>
 <symbol id="i-rot" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></symbol>
 <symbol id="i-wand" viewBox="0 0 24 24"><path d="M11 3l1.9 4.6L17.5 9.5l-4.6 1.9L11 16l-1.9-4.6L4.5 9.5l4.6-1.9z"/><path d="M18.5 14.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+<symbol id="i-hd" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M7 9.5v5M7 12h3M10 9.5v5M13.5 9.5v5h1.6a2.5 2.5 0 0 0 0-5z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
 <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
 <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></symbol>
@@ -374,6 +391,8 @@ input[type=range]{width:100%;accent-color:var(--hi)}
       <button class="nav prev" id="ePrev" title="Halaman sebelumnya"><svg class="i"><use href="#i-left"/></svg></button>
       <button class="nav next" id="eNext" title="Halaman berikutnya"><svg class="i"><use href="#i-right"/></svg></button>
       <div class="pgNo" id="pgNo">1 / 1</div>
+      <div class="hdTag" id="hdTag" title="Diekspor dengan resolusi HD 300 dpi">HD</div>
+      <button class="cmp" id="eCmp" title="Tahan untuk melihat foto asli"><svg class="i"><use href="#i-eye"/></svg><span>Bandingkan</span></button>
       <div class="spin" id="eSpin"></div>
     </div>
     <aside class="eSide">
@@ -388,10 +407,19 @@ input[type=range]{width:100%;accent-color:var(--hi)}
         <label class="sl"><span>Ketajaman</span><input type="range" id="aSh" min="-50" max="100" value="0"><output></output></label>
         <label class="sl" id="aThRow"><span>Tebal teks</span><input type="range" id="aTh" min="-50" max="50" value="0"><output></output></label>
       </div>
+      <div class="panel" id="pHD">
+        <div class="pHead"><b>Kualitas HD</b><button class="link" id="hReset">Reset</button></div>
+        <button class="btn hdAuto" id="hAuto"><svg class="i"><use href="#i-wand"/></svg><span>Tingkatkan otomatis</span></button>
+        <label class="tg"><span>Resolusi HD 300 dpi<small>Super resolusi: teks &amp; angka kecil lebih jelas</small></span><input type="checkbox" id="hRes"><i></i></label>
+        <label class="sl"><span>Detail</span><input type="range" id="hDt" min="-50" max="100" value="0"><output></output></label>
+        <label class="sl"><span>Kurangi noise</span><input type="range" id="hDn" min="-50" max="100" value="0"><output></output></label>
+        <label class="sl"><span>Latar putih</span><input type="range" id="hWb" min="-50" max="100" value="0"><output></output></label>
+      </div>
       <div class="tools" id="tools">
         <button data-t="crop"><svg class="i"><use href="#i-crop"/></svg><span>Potong</span></button>
         <button data-t="rot"><svg class="i"><use href="#i-rot"/></svg><span>Putar</span></button>
         <button data-t="filter" class="on"><svg class="i"><use href="#i-wand"/></svg><span>Filter</span></button>
+        <button data-t="hd"><svg class="i"><use href="#i-hd"/></svg><span>HD</span></button>
         <button data-t="adj"><svg class="i"><use href="#i-sliders"/></svg><span>Atur</span></button>
         <button data-t="draw"><svg class="i"><use href="#i-pen"/></svg><span>Edit</span></button>
         <button data-t="pages"><svg class="i"><use href="#i-grid"/></svg><span>Halaman</span></button>
@@ -563,18 +591,20 @@ const DB = {
 };
 
 /* ================= state ================= */
-const PREF = Object.assign({ filter: 'magic', fmt: 'pdf', size: 'a4', margin: '0', qual: 'standar', zip: true, auto: false, multi: false, pages: 'all' }, jget('scan.prefs') || {});
+const PREF = Object.assign({ filter: 'hd', fmt: 'pdf', size: 'a4', margin: '0', qual: 'standar', zip: true, auto: false, multi: false, pages: 'all' }, jget('scan.prefs') || {});
 const savePref = () => jset('scan.prefs', PREF);
+if (!PREF.v2) { if (PREF.filter === 'magic') PREF.filter = 'hd'; PREF.v2 = 1; savePref(); } // Super HD becomes the default once
 const S = { docs: [], doc: null, cur: 0, view: 'home', addTo: null, panel: 'filter', pushed: false };
 const blobMem = new Map();             // page id -> source JPEG blob (session)
 const srcCache = new LRU(2);           // page id -> full-size source ImageData
 const prevSrcCache = new LRU(4);       // page id -> preview-size source ImageData
 const warpCache = new LRU(5);          // page id -> {key, img}
 const procCache = new LRU(4);          // page id -> {key, img}
-const MAXSRC = 3200, PREV = 1600, PREVOUT = 1500, MAXOUT = 3400;
+const MAXSRC = 4032, PREV = 1600, PREVOUT = 1500, MAXOUT = 3508; // 4032 = native 12 MP phone photo, 3508 = A4 @ 300 dpi
 
 const FILTERS = [
   { id: 'orig', name: 'Asli' },
+  { id: 'hd', name: 'Super HD' },
   { id: 'magic', name: 'Ajaib' },
   { id: 'enh', name: 'Tajam' },
   { id: 'gray', name: 'Abu-abu' },
@@ -599,7 +629,7 @@ async function importImage(file) {
   x.imageSmoothingQuality = 'high'; x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
   x.drawImage(im, 0, 0, c.width, c.height); if (im.close) im.close();
   const data = x.getImageData(0, 0, c.width, c.height);
-  const blob = await toBlob(c, 'image/jpeg', 0.92); free(c);
+  const blob = await toBlob(c, 'image/jpeg', 0.94); free(c);
   return { data, blob, w: data.width, h: data.height };
 }
 function cloneData(img) { return new ImageData(new Uint8ClampedArray(img.data), img.width, img.height); }
@@ -651,10 +681,13 @@ function homography(src, dst) {
   }
   const h = solve(A, b); h.push(1); return h;
 }
+// perspective warp with Catmull-Rom bicubic sampling (keeps thin strokes and small digits crisp, also when upscaling)
 function warp(src, quad, ow, oh) {
   const { width: sw, height: sh, data: sd } = src;
   const H = homography([[0, 0], [ow, 0], [ow, oh], [0, oh]], quad);
-  const out = new ImageData(ow, oh), od = out.data; const R = sw * 4, mx = sw - 1.001, my = sh - 1.001;
+  const out = new ImageData(ow, oh), od = out.data; const mx = sw - 1, my = sh - 1;
+  const wx = new Float32Array(4), wy = new Float32Array(4), xo = new Int32Array(4), yo = new Int32Array(4);
+  const cw = (t, w) => { const t2 = t * t, t3 = t2 * t; w[0] = (-t3 + 2 * t2 - t) * 0.5; w[1] = (3 * t3 - 5 * t2 + 2) * 0.5; w[2] = (-3 * t3 + 4 * t2 + t) * 0.5; w[3] = (t3 - t2) * 0.5; };
   let o = 0;
   for (let y = 0; y < oh; y++) {
     const Y = y + 0.5, ax = H[1] * Y + H[2], ay = H[4] * Y + H[5], az = H[7] * Y + 1;
@@ -662,12 +695,17 @@ function warp(src, quad, ow, oh) {
       const X = x + 0.5, z = H[6] * X + az;
       let sx = (H[0] * X + ax) / z - 0.5, sy = (H[3] * X + ay) / z - 0.5;
       sx = sx < 0 ? 0 : sx > mx ? mx : sx; sy = sy < 0 ? 0 : sy > my ? my : sy;
-      const x0 = sx | 0, y0 = sy | 0, fx = sx - x0, fy = sy - y0, gx = 1 - fx, gy = 1 - fy;
-      const i = (y0 * sw + x0) * 4, j = i + R;
-      od[o] = (sd[i] * gx + sd[i + 4] * fx) * gy + (sd[j] * gx + sd[j + 4] * fx) * fy;
-      od[o + 1] = (sd[i + 1] * gx + sd[i + 5] * fx) * gy + (sd[j + 1] * gx + sd[j + 5] * fx) * fy;
-      od[o + 2] = (sd[i + 2] * gx + sd[i + 6] * fx) * gy + (sd[j + 2] * gx + sd[j + 6] * fx) * fy;
-      od[o + 3] = 255;
+      const x0 = sx | 0, y0 = sy | 0; cw(sx - x0, wx); cw(sy - y0, wy);
+      for (let k = 0; k < 4; k++) { const a = x0 + k - 1, b = y0 + k - 1; xo[k] = (a < 0 ? 0 : a > mx ? mx : a) * 4; yo[k] = (b < 0 ? 0 : b > my ? my : b) * sw * 4; }
+      let r = 0, g = 0, bl = 0;
+      for (let j = 0; j < 4; j++) {
+        const row = yo[j], q = wy[j];
+        const i0 = row + xo[0], i1 = row + xo[1], i2 = row + xo[2], i3 = row + xo[3];
+        r += q * (sd[i0] * wx[0] + sd[i1] * wx[1] + sd[i2] * wx[2] + sd[i3] * wx[3]);
+        g += q * (sd[i0 + 1] * wx[0] + sd[i1 + 1] * wx[1] + sd[i2 + 1] * wx[2] + sd[i3 + 1] * wx[3]);
+        bl += q * (sd[i0 + 2] * wx[0] + sd[i1 + 2] * wx[1] + sd[i2 + 2] * wx[2] + sd[i3 + 2] * wx[3]);
+      }
+      od[o] = r; od[o + 1] = g; od[o + 2] = bl; od[o + 3] = 255;
     }
   }
   return out;
@@ -1009,13 +1047,133 @@ function saturate(d, s) {
     d[i] = l + (d[i] - l) * s; d[i + 1] = l + (d[i + 1] - l) * s; d[i + 2] = l + (d[i + 2] - l) * s;
   }
 }
+/* ================= HD detail engine (luminance) ================= */
+// per filter defaults: [denoise, detail (local contrast), sharpen, white paper]
+const FBASE = { orig: [0, 0, 0, 0], hd: [0.35, 0.4, 0.95, 0.45], magic: [0.25, 0.2, 0.7, 0.25], enh: [0.2, 0.3, 0.65, 0], gray: [0.3, 0.25, 0.8, 0.3], bw: [0.45, 0.3, 0.9, 0] };
+const hdOn = p => p.adj && p.adj.hd != null ? !!p.adj.hd : p.filter === 'hd';
+function lumaOf(d) {
+  const n = d.length >> 2, L = new Uint8ClampedArray(n);
+  for (let i = 0, j = 0; j < n; i += 4, j++) L[j] = (77 * d[i] + 150 * d[i + 1] + 29 * d[i + 2] + 128) >> 8;
+  return L;
+}
+function boxH1(s, o, w, h, r) {
+  const inv = 1 / (r + r + 1);
+  for (let y = 0; y < h; y++) {
+    const row = y * w; let acc = (r + 1) * s[row];
+    for (let k = 1; k <= r; k++) acc += s[row + Math.min(k, w - 1)];
+    for (let x = 0; x < w; x++) { o[row + x] = acc * inv; acc += s[row + Math.min(x + r + 1, w - 1)] - s[row + Math.max(x - r, 0)]; }
+  }
+}
+function boxV1(s, o, w, h, r) { // row-wise sweep with per-column sums (cache friendly)
+  const inv = 1 / (r + r + 1), acc = new Float32Array(w);
+  for (let x = 0; x < w; x++) { let a = (r + 1) * s[x]; for (let k = 1; k <= r; k++) a += s[Math.min(k, h - 1) * w + x]; acc[x] = a; }
+  for (let y = 0; y < h; y++) {
+    const row = y * w, ad = Math.min(y + r + 1, h - 1) * w, sb = Math.max(y - r, 0) * w;
+    for (let x = 0; x < w; x++) { o[row + x] = acc[x] * inv; acc[x] += s[ad + x] - s[sb + x]; }
+  }
+}
+// ~gaussian blur of one plane (two box passes)
+function blur1(s, w, h, r) {
+  const t = new Uint8ClampedArray(s.length), o = new Uint8ClampedArray(s.length);
+  boxH1(s, t, w, h, r); boxV1(t, o, w, h, r); boxH1(o, t, w, h, r); boxV1(t, o, w, h, r);
+  return o;
+}
+// local min / max over a (2r+1)² square
+function minMax1(s, w, h, r) {
+  const n = s.length, a = new Uint8Array(n), b = new Uint8Array(n), mn = new Uint8Array(n), mx = new Uint8Array(n);
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < w; x++) {
+      let lo = 255, hi = 0; const e = Math.min(w - 1, x + r);
+      for (let k = Math.max(0, x - r); k <= e; k++) { const v = s[row + k]; if (v < lo) lo = v; if (v > hi) hi = v; }
+      a[row + x] = lo; b[row + x] = hi;
+    }
+  }
+  for (let y = 0; y < h; y++) {
+    const y0 = Math.max(0, y - r), y1 = Math.min(h - 1, y + r), row = y * w;
+    for (let x = 0; x < w; x++) {
+      let lo = 255, hi = 0;
+      for (let k = y0; k <= y1; k++) { const i = k * w + x; if (a[i] < lo) lo = a[i]; if (b[i] > hi) hi = b[i]; }
+      mn[row + x] = lo; mx[row + x] = hi;
+    }
+  }
+  return { mn, mx };
+}
+// edge-aware pipeline: denoise flat areas -> local contrast -> crisp sharpen clamped to the local range (no halos);
+// colour noise is smoothed separately so letters stay sharp while coloured speckle disappears
+function detailHD(d, w, h, dn, dt, sh, color) {
+  if (dn < 0.01 && dt < 0.01 && sh < 0.01) return;
+  const u = Math.max(w, h) / 1700, n = w * h, r1 = Math.max(1, Math.round(u));
+  const L0 = lumaOf(d); let L = L0;
+  if (dn >= 0.01) {
+    const B = blur1(L0, w, h, r1), t = 3 + 12 * dn, k = Math.min(1, dn * 1.6), o = new Uint8ClampedArray(n);
+    for (let j = 0; j < n; j++) { const df = L0[j] - B[j], a = (df < 0 ? -df : df) / t, g = a >= 1 ? 1 : a * a; o[j] = B[j] + df * (1 - k * (1 - g)); }
+    L = o;
+  }
+  if (dt >= 0.01) {
+    const B = blur1(L, w, h, Math.max(2, Math.round(12 * u))), k = dt * 1.4, o = new Uint8ClampedArray(n);
+    for (let j = 0; j < n; j++) { let v = (L[j] - B[j]) * k; v = 48 * v / (48 + (v < 0 ? -v : v)); o[j] = L[j] + v; }
+    L = o;
+  }
+  if (sh >= 0.01) {
+    const B = blur1(L, w, h, r1), { mn, mx } = minMax1(L, w, h, r1), k = sh * 2, ov = 6, o = new Uint8ClampedArray(n);
+    for (let j = 0; j < n; j++) {
+      const df = L[j] - B[j]; if (df > -1.5 && df < 1.5) { o[j] = L[j]; continue; }
+      const v = L[j] + df * k, lo = mn[j] - ov, hi = mx[j] + ov; o[j] = v < lo ? lo : v > hi ? hi : v;
+    }
+    L = o;
+  }
+  if (color && dn >= 0.01) {
+    // smoothed chroma, never more colourful than the pixel was (no bleed into text), weak chroma gated to neutral ink/paper
+    const C = blurRGBA(d, w, h, Math.max(1, Math.round(3 * u))), m = Math.min(1, dn * 2.5), glo = 4 + 20 * dn;
+    for (let i = 0, j = 0; j < n; i += 4, j++) {
+      const lc = (77 * C[i] + 150 * C[i + 1] + 29 * C[i + 2] + 128) >> 8, l0 = L0[j], nl = L[j];
+      const ar = d[i] - l0, ag = d[i + 1] - l0, ab = d[i + 2] - l0;
+      const cr = ar + (C[i] - lc - ar) * m, cg = ag + (C[i + 1] - lc - ag) * m, cb = ab + (C[i + 2] - lc - ab) * m;
+      const m0 = Math.max(ar, ag, ab) - Math.min(ar, ag, ab), mm = Math.max(cr, cg, cb) - Math.min(cr, cg, cb);
+      let k = mm > m0 && mm > 0 ? m0 / mm : 1; const mag = mm * k, lo = nl < 100 ? glo * 1.5 : glo, hi = lo * 2.2;
+      if (mag <= lo) k = 0; else if (mag < hi) { const t = (mag - lo) / (hi - lo); k *= t * t * (3 - 2 * t); }
+      d[i] = nl + cr * k; d[i + 1] = nl + cg * k; d[i + 2] = nl + cb * k;
+    }
+  } else for (let i = 0, j = 0; j < n; i += 4, j++) { const dl = L[j] - L0[j]; if (dl) { d[i] += dl; d[i + 1] += dl; d[i + 2] += dl; } }
+}
+// push light, unsaturated pixels (paper grain, shadows) to clean white; coloured marks/highlights are kept
+function whitenPaper(d, wb) {
+  const lo = 228 - 70 * wb, hi = 250 - 22 * wb, span = hi - lo;
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2], l = (77 * r + 150 * g + 29 * b) >> 8; if (l <= lo) continue;
+    const mx = r > g ? (r > b ? r : b) : (g > b ? g : b), mn = r < g ? (r < b ? r : b) : (g < b ? g : b);
+    let f = l >= hi ? 1 : (l - lo) / span; f = f * f * (3 - 2 * f) * (1 - Math.min(1, mx ? (mx - mn) / mx * 4 : 0)); if (f <= 0) continue;
+    d[i] = r + (255 - r) * f; d[i + 1] = g + (255 - g) * f; d[i + 2] = b + (255 - b) * f;
+  }
+}
+// suggest HD settings from the un-filtered page: noise level, blur and contrast
+function autoTune(img) {
+  const { width: w, height: h } = img, L = lumaOf(img.data), hn = new Uint32Array(256), hg = new Uint32Array(256), hl = new Uint32Array(256);
+  let n = 0;
+  for (let y = 1; y < h - 1; y += 2) for (let x = 1; x < w - 1; x += 2) {
+    const c = y * w + x, up = c - w, dw = c + w;
+    const lap = 4 * L[c] - 2 * (L[c - 1] + L[c + 1] + L[up] + L[dw]) + L[up - 1] + L[up + 1] + L[dw - 1] + L[dw + 1];
+    hn[Math.min(255, Math.abs(lap))]++; hg[Math.min(255, Math.abs(L[c + 1] - L[c - 1]) + Math.abs(L[dw] - L[up]))]++; hl[L[c]]++; n++;
+  }
+  const pct = (H, q) => { let a = 0; for (let k = 0; k < 256; k++) { a += H[k]; if (a >= n * q) return k; } return 255; };
+  const sigma = pct(hn, 0.5) / 4.05, sharp = pct(hg, 0.99), range = pct(hl, 0.98) - pct(hl, 0.02);
+  return {
+    dn: Math.round(clamp((sigma - 1.2) * 15 + 10, 10, 50)),
+    sh: sharp < 70 ? 45 : sharp < 120 ? 25 : 10,
+    dt: range < 110 ? 45 : range < 170 ? 25 : 10,
+    wb: 25, hd: true, info: { sigma: +sigma.toFixed(2), sharp, range }
+  };
+}
 // in place on ImageData; returns it
 function enhance(img, f, adj = {}) {
   const { width: w, height: h, data: d } = img;
   const br = adj.br || 0, ct = adj.ct || 0, sh = adj.sh || 0, th = adj.th || 0;
-  if (f === 'magic' || f === 'gray' || f === 'bw') normalize(d, w, h, bgEstimate(d, w, h), f !== 'magic');
+  const base = FBASE[f] || FBASE.orig, c01 = v => clamp(v, 0, 1);
+  const dn = c01(base[0] + (adj.dn || 0) / 100), dt = c01(base[1] + (adj.dt || 0) / 100), wb = c01(base[3] + (adj.wb || 0) / 100);
+  if (f === 'magic' || f === 'hd' || f === 'gray' || f === 'bw') normalize(d, w, h, bgEstimate(d, w, h), f === 'gray' || f === 'bw');
   else if (f === 'enh') autoLevels(d);
-  const curve = { magic: [0.13, 0.9, 1.15], gray: [0.16, 0.9, 1.25], enh: [0.02, 0.98, 1.05], bw: [0, 1, 1], orig: [0, 1, 1] }[f] || [0, 1, 1];
+  const curve = { hd: [0.11, 0.92, 1.15], magic: [0.13, 0.9, 1.15], gray: [0.16, 0.9, 1.25], enh: [0.02, 0.98, 1.05], bw: [0, 1, 1], orig: [0, 1, 1] }[f] || [0, 1, 1];
   const lut = new Uint8ClampedArray(256); let ident = true;
   for (let v = 0; v < 256; v++) {
     let x = v / 255;
@@ -1025,11 +1183,9 @@ function enhance(img, f, adj = {}) {
     lut[v] = x * 255; if (lut[v] !== v) ident = false;
   }
   if (!ident) for (let i = 0; i < d.length; i += 4) { d[i] = lut[d[i]]; d[i + 1] = lut[d[i + 1]]; d[i + 2] = lut[d[i + 2]]; }
-  if (f === 'magic') saturate(d, 1.3); else if (f === 'enh') saturate(d, 1.12);
-  const base = { orig: 0, magic: 0.7, enh: 0.65, gray: 0.8, bw: 0.9 }[f] || 0;
-  const amt = base + (sh > 0 ? sh / 100 * 1.6 : 0);
+  if (f === 'magic') saturate(d, 1.3); else if (f === 'hd') saturate(d, 1.22); else if (f === 'enh') saturate(d, 1.12);
   if (sh < 0 && f !== 'bw') soften(d, w, h, -sh / 100 * 0.9);
-  unsharp(d, w, h, sh < 0 ? base * (1 + sh / 100) : amt);
+  detailHD(d, w, h, dn, dt, sh < 0 ? base[2] * (1 + sh / 100) : base[2] + sh / 100 * 1.6, f !== 'gray' && f !== 'bw');
   if (f === 'bw') {
     const t = (0.74 + th * 0.0045) * 255, lo = t - 20, hi = t + 10, tl = new Uint8ClampedArray(256);
     for (let v = 0; v < 256; v++) { const u = clamp((v - lo) / (hi - lo), 0, 1); tl[v] = u * u * (3 - 2 * u) * 255; }
@@ -1040,6 +1196,7 @@ function enhance(img, f, adj = {}) {
     for (let v = 0; v < 256; v++) tl[v] = Math.pow(v / 255, g) * 255;
     for (let i = 0; i < d.length; i += 4) { d[i] = tl[d[i]]; d[i + 1] = tl[d[i + 1]]; d[i + 2] = tl[d[i + 2]]; }
   }
+  if (wb >= 0.01 && f !== 'bw') whitenPaper(d, wb);
   return img;
 }
 
@@ -1098,7 +1255,9 @@ async function getProcessed(p) {
 }
 // full resolution page canvas (annotations included); maxSide limits output
 async function renderFull(p, maxSide) {
-  const src = await getSrcData(p), [W, H] = outSize(p.quad), k = Math.min(1, MAXOUT / Math.max(W, H));
+  const src = await getSrcData(p), [W, H] = outSize(p.quad), L = Math.max(W, H);
+  // HD: warp straight to the export size (bicubic super resolution) so the detail pass works at print density
+  const k = hdOn(p) ? Math.max(Math.min(1, MAXOUT / L), Math.min(maxSide, MAXOUT) / L) : Math.min(1, MAXOUT / L);
   let img = warp(src, p.quad, Math.max(1, Math.round(W * k)), Math.max(1, Math.round(H * k)));
   img = enhance(rotData(img, p.rot), p.filter, p.adj);
   let c = mkCanvas(img.width, img.height); c.getContext('2d').putImageData(img, 0, 0); img = null;
@@ -1137,7 +1296,7 @@ function saveDoc(doc, now) {
   saveTimers.set(doc.id, setTimeout(run, 400));
 }
 function commitPage(item, doc) {
-  const p = { id: uid(), w: item.w, h: item.h, quad: item.quad.map(q => [+q[0].toFixed(2), +q[1].toFixed(2)]), rot: 0, filter: PREF.filter || 'magic', adj: { br: 0, ct: 0, sh: 0, th: 0 }, ann: [], thumb: '' };
+  const p = { id: uid(), w: item.w, h: item.h, quad: item.quad.map(q => [+q[0].toFixed(2), +q[1].toFixed(2)]), rot: 0, filter: PREF.filter || 'magic', adj: { br: 0, ct: 0, sh: 0, th: 0, dt: 0, dn: 0, wb: 0 }, ann: [], thumb: '' };
   srcCache.set(p.id, item.data); blobMem.set(p.id, item.blob);
   DB.put('src', item.blob, p.id);
   doc.pages.push(p);
@@ -1519,12 +1678,14 @@ function syncEditUI() {
   $('#pgNo').textContent = `${S.cur + 1} / ${n}`;
   $('#ePrev').disabled = S.cur <= 0; $('#eNext').disabled = S.cur >= n - 1;
   $$('#filters .fc').forEach(f => f.classList.toggle('on', f.dataset.f === p.filter));
-  for (const [id, k] of [['aBr', 'br'], ['aCt', 'ct'], ['aSh', 'sh'], ['aTh', 'th']]) { const el = $('#' + id); el.value = p.adj[k] || 0; el.nextElementSibling.textContent = el.value; }
+  for (const [id, k] of ADJ) { const el = $('#' + id); el.value = p.adj[k] || 0; el.nextElementSibling.textContent = el.value; }
   $('#aThRow').classList.toggle('dis', p.filter === 'orig');
+  $('#hRes').checked = hdOn(p); $('#hdTag').classList.toggle('on', hdOn(p));
 }
 // filter chips
 $('#filters').innerHTML = FILTERS.map(f => `<button class="fc" data-f="${f.id}"><canvas width="58" height="74"></canvas><span>${f.name}</span></button>`).join('');
 const FT = { key: '' };
+const ADJ = [['aBr', 'br'], ['aCt', 'ct'], ['aSh', 'sh'], ['aTh', 'th'], ['hDt', 'dt'], ['hDn', 'dn'], ['hWb', 'wb']];
 async function renderFilterThumbs(p) {
   const key = warpKey(p); if (FT.key === key) return; FT.key = key;
   const w = await getWarpPrev(p); if (FT.key !== key) return;
@@ -1545,21 +1706,42 @@ $('#fAll').onclick = () => {
   saveDoc(S.doc); renderStrip(); bgThumbs(S.doc); toast('Filter diterapkan ke ' + S.doc.pages.length + ' halaman');
 };
 let adjRaf = 0;
-for (const [id, k] of [['aBr', 'br'], ['aCt', 'ct'], ['aSh', 'sh'], ['aTh', 'th']]) {
+for (const [id, k] of ADJ) {
   const el = $('#' + id);
   el.oninput = () => { const p = curPage(); if (!p) return; p.adj = { ...p.adj, [k]: +el.value }; el.nextElementSibling.textContent = el.value; cancelAnimationFrame(adjRaf); adjRaf = requestAnimationFrame(() => renderCurrent()); };
   el.onchange = () => saveDoc(S.doc);
 }
-$('#aReset').onclick = () => { const p = curPage(); if (!p) return; p.adj = { br: 0, ct: 0, sh: 0, th: 0 }; renderCurrent(); saveDoc(S.doc); };
+$('#aReset').onclick = () => { const p = curPage(); if (!p) return; p.adj = { ...p.adj, br: 0, ct: 0, sh: 0, th: 0 }; renderCurrent(); saveDoc(S.doc); };
+$('#hReset').onclick = () => { const p = curPage(); if (!p) return; const a = { ...p.adj, dt: 0, dn: 0, wb: 0 }; delete a.hd; p.adj = a; renderCurrent(); saveDoc(S.doc); };
+$('#hRes').onchange = () => { const p = curPage(); if (!p) return; p.adj = { ...p.adj, hd: $('#hRes').checked }; syncEditUI(); saveDoc(S.doc); toast(p.adj.hd ? 'Resolusi HD aktif: halaman diekspor 300 dpi' : 'Resolusi HD mati'); };
+$('#hAuto').onclick = async () => {
+  const p = curPage(); if (!p) return;
+  const t = autoTune(await getWarpPrev(p));
+  if (p.filter === 'orig' || p.filter === 'magic') { p.filter = 'hd'; PREF.filter = 'hd'; savePref(); }
+  p.adj = { ...p.adj, dn: t.dn, sh: Math.max(p.adj.sh || 0, t.sh), dt: t.dt, wb: p.filter === 'bw' ? 0 : t.wb, hd: true };
+  await renderCurrent(); saveDoc(S.doc);
+  toast(`Ditingkatkan: noise −${t.dn + Math.round((FBASE[p.filter] || FBASE.orig)[0] * 100)}, detail +${t.dt}, tajam +${p.adj.sh}, HD 300 dpi`);
+};
+// hold to compare with the plain cropped photo
+const CMP = { on: false };
+$('#eCmp').addEventListener('pointerdown', async e => {
+  e.preventDefault(); const p = curPage(); if (!p) return;
+  CMP.on = true; $('#eCmp').classList.add('on'); try { $('#eCmp').setPointerCapture(e.pointerId); } catch (_) {}
+  const img = await getWarpPrev(p); if (!CMP.on) return;
+  const c = $('#pv'); if (c.width !== img.width || c.height !== img.height) { c.width = img.width; c.height = img.height; }
+  c.getContext('2d').putImageData(img, 0, 0);
+});
+const cmpEnd = () => { if (!CMP.on) return; CMP.on = false; $('#eCmp').classList.remove('on'); renderCurrent(); };
+for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) $('#eCmp').addEventListener(ev, cmpEnd);
 function setPanel(v) {
   S.panel = v;
-  $('#pFilter').classList.toggle('show', v === 'filter'); $('#pAdj').classList.toggle('show', v === 'adj');
+  $('#pFilter').classList.toggle('show', v === 'filter'); $('#pAdj').classList.toggle('show', v === 'adj'); $('#pHD').classList.toggle('show', v === 'hd');
   $$('#tools button').forEach(b => b.classList.toggle('on', b.dataset.t === v));
 }
 $('#tools').onclick = async e => {
   const b = e.target.closest('button'); const p = curPage(); if (!b || !p) return;
   const t = b.dataset.t;
-  if (t === 'filter' || t === 'adj') { setPanel(S.panel === t ? '' : t); if (S.panel === 'filter') renderFilterThumbs(p); }
+  if (t === 'filter' || t === 'adj' || t === 'hd') { setPanel(S.panel === t ? '' : t); if (S.panel === 'filter') renderFilterThumbs(p); }
   else if (t === 'crop') openCrop({ page: p });
   else if (t === 'rot') { p.rot = (p.rot + 90) % 360; FT.key = ''; await renderCurrent(); saveDoc(S.doc); }
   else if (t === 'draw') openDraw();
@@ -1894,7 +2076,7 @@ addEventListener('resize', () => { layoutCrop(); layoutDraw(); if (DR.tIn) style
   try { S.docs = (await DB.all()).filter(d => d && d.pages && d.pages.length); } catch (e) { S.docs = []; }
   renderHome();
 })();
-window.SCAN = { S, detectQuad, detectCore, enhance, warp, outSize, handleFiles, renderFull, getProcessed, buildExport, PREF, CR };
+window.SCAN = { S, detectQuad, detectCore, enhance, autoTune, detailHD, warp, outSize, handleFiles, renderFull, getProcessed, buildExport, PREF, CR };
 </script>
 </body>
 </html>
